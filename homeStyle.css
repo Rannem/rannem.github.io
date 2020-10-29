@@ -1,7 +1,12 @@
 * {
-    font-family: roboto, sans-serif;
+    box-sizing: border-box;
     margin: 0;
+    font-family: 'Roboto', sans-serif;
     padding: 0;
+}
+
+body {
+    min-height: 100vh;
 }
 
 nav {
@@ -32,6 +37,12 @@ a:hover {
 
 .flex-container {
     display: flex;
+    justify-content: center;
+    flex-flow: column;
     max-width: 40em;
-    flex-direction: column;
+    
+    
+}
+h1 {
+    text-decoration: black underline solid;
 }

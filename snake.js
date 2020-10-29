@@ -7,111 +7,223 @@ document.addEventListener('DOMContentLoaded', function () {
 
     startButtonNode.appendChild(textNode);
     document.body.appendChild(startButtonNode);
-    startButtonNode.addEventListener("click", initSnake);
-    startButtonNode.addEventListener("click", timerStart);
+    startButtonNode.addEventListener("click", initBoard);
+
 
 })
-
+//timer and score vars
 let score = 0;
 let myTimer = 0;
+
+//board size vars
+const board = [];
+const boardWidth = 26, boardHeight = 16;
+
+//snake vars
+let snakeX;
+let snakeY;
+let snakeDirection;
+let snakeLength;
+let previousSnakeDirection;
+
 function timerStart() {
     setInterval(function () {
         myTimer++
-        console.log(myTimer)
-
     }, 1000);
 }
 
+function initBoard() {
+    document.body.innerHTML = ""
+
+    let startBoardNode = document.createElement("div")
+    startBoardNode.id = ("board")
+    document.body.appendChild(startBoardNode);
+    document.addEventListener(`keypress`, inputSnake)
+    initGame()
+
+}
+
+function initGame() {
+    // score
+    let score = document.createElement("p");
+    score.id = "score";
+    document.body.appendChild(score)
+
+    // timer
+    
+    let timerNode = document.createElement("p")
+    timerNode.id = ("timer")
+    timerNode.innerHTML = "You have survied for " + myTimer+ " seconds."
+    document.body.appendChild(timerNode);
+
+    const boardNode = document.getElementById("board")
+
+    for (let y = 0; y < boardHeight; y++) {
+        let row = []
+        for (let x = 0; x < boardWidth; x++) {
+            let cell = {};
+
+            cell.element = document.createElement("div")
+            boardNode.appendChild(cell.element);
+            row.push(cell);
+        }
+        board.push(row);
+    }
+    timerStart()
+    startGame()
+    gameLoop()
+}
+
+function startGame() {
+
+    // Default position for the snake in the middle of the board.
+    snakeX = Math.floor(boardWidth / 2);
+    snakeY = Math.floor(boardHeight / 2);
+    snakeLength = 5;
+    snakeDirection = 'Up';
+    previousSnakeDirection = 'Up';
 
 
-
-
-
-
-function initSnake() {
-    document.body.innerHTML = "Snake";
-    let playBoxNode = document.createElement("div")
-    playBoxNode.classList.add("playbox")
-
-    let playerNode = document.createElement("div")
-    playerNode.classList.add("player")
-
-    let timerNode = document.createElement("div")
-    timerNode.classList.add("timer")
-    timerNode.innerHTML = myTimer
-    setInterval(function () { timerNode.innerHTML = myTimer; }, 1000)
-
-
-    let scoreNode = document.createElement("div")
-    scoreNode.classList.add("score")
-    scoreNode.innerHTML = "0";
-
-
-    let playerPosX = 0;
-    let playerPosY = 0;
-
-    document.addEventListener('keypress', keyInput);
-    let speed = 10;
-    setInterval(function () {
-        speed = speed + (myTimer % 10)
-    }, 1000)
-
-
-    function keyInput(keypress) {
-        console.log(keypress.code)
-
-        switch (keypress.code) {
-
-            case `KeyA`:
-                up = false
-                down = false
-                left = true
-                right = false
-                return;
-
-            case `KeyD`:
-                up = false
-                down = false
-                left = false
-                right = true
-                return;
-            case `KeyW`:
-                up = true
-                down = false
-                left = false
-                right = false
-                return;
-            case `KeyS`:
-                up = false
-                down = true
-                left = false
-                right = false
-                return;
+    //Clear board
+    for (var y = 0; y < boardHeight; ++y) {
+        for (var x = 0; x < boardWidth; ++x) {
+            board[y][x].snake = 0;
+            board[y][x].apple = 0;
         }
     }
 
-    setInterval(function () {
-        if (left == true) {
-            playerNode.style.left = (playerPosX = (playerPosX + -speed)) + `px`;
-        }
+    // Set the center of the board to contain a snake
+    board[snakeY][snakeX].snake = snakeLength;
 
-        if (right == true) {
-            playerNode.style.left = (playerPosX = (playerPosX + speed)) + `px`;
-        }
-
-        if (up == true) {
-            playerNode.style.top = (playerPosY = (playerPosY + -speed)) + `px`;
-        }
-
-        if (down == true) {
-            playerNode.style.top = (playerPosY = (playerPosY + speed)) + `px`;
-        }
-
-
-    }, 100);
-
-    playBoxNode.appendChild(playerNode)
-    document.body.appendChild(playBoxNode);
-    document.body.appendChild(timerNode);
-    document.body.appendChild(scoreNode);
+    // places food
+    placeFood()
 }
+
+function gameLoop() {
+    let score = document.getElementById("score")
+    let timer = document.getElementById("timer")
+
+    score.innerHTML = "Score: " + (snakeLength - 5);
+    timer.innerHTML = "You have survied for " + myTimer+ " seconds."
+
+    //  Direction changer
+    switch (snakeDirection) {
+        case `Up`:
+            snakeY--
+            break;
+        case 'Down':
+            snakeY++
+            break;
+        case 'Left':
+            snakeX--
+            break;
+        case 'Right':
+            snakeX++
+            break;
+    }
+
+    if (snakeX < 0 || snakeY < 0 || snakeX >= boardWidth || snakeY >= boardHeight) {
+        startGame()
+    }
+
+    if (board[snakeY][snakeX].snake > 0) {
+        startGame();
+    }
+
+    if (board[snakeY][snakeX].apple === 1) {
+        snakeLength++;
+        board[snakeY][snakeX].apple = 0;
+        placeFood()
+    }
+    // Updates the snake
+
+    board[snakeY][snakeX].snake = snakeLength;
+
+    // Loop over the entire board, and update every cell
+    for (let y = 0; y < boardHeight; ++y) {
+        for (let x = 0; x < boardWidth; ++x) {
+            let cell = board[y][x];
+
+            if (cell.snake > 0) {
+                cell.element.className = 'snake';
+                cell.snake -= 1;
+            } else if (cell.apple === 1) {
+                cell.element.className = "apple"
+            } else {
+                cell.element.className = '';
+            }
+        }
+    }
+    setTimeout(gameLoop, 1000 / snakeLength);
+}
+
+function inputSnake(keypress) {
+    // Update direction depending on key hit
+    console.log(keypress.code)
+    switch (keypress.code) {
+        case `KeyW`:
+            //Checks to not selfcrash by mistake direction change
+            if (previousSnakeDirection == 'Down') {
+                return;
+            }
+
+            //changes direction yo up
+            snakeDirection = 'Up';
+            previousSnakeDirection = 'Up';
+
+            break;
+
+        case `KeyS`:
+            //Checks to not selfcrash by mistake direction change
+            if (previousSnakeDirection == 'Up') {
+                return;
+            }
+
+            //changes direction yo down
+            snakeDirection = 'Down';
+            previousSnakeDirection = 'Down';
+
+            break;
+
+        case `KeyA`:
+            //Checks to not selfcrash by mistake direction change
+            if (previousSnakeDirection == 'Right') {
+                return;
+            }
+
+            //changes direction yo left
+            snakeDirection = 'Left';
+            previousSnakeDirection = 'Left';
+
+            break;
+
+        case `KeyD`:
+            //Checks to not selfcrash by mistake direction change
+            if (previousSnakeDirection == 'Left') {
+                return;
+            }
+
+            //changes direction yo up
+            snakeDirection = 'Right';
+            previousSnakeDirection = 'Right';
+
+
+            break;
+
+        default: return;
+    }
+}
+
+function placeFood() {
+    let appleX = Math.floor(Math.random() * boardWidth);
+    let appleY = Math.floor(Math.random() * boardHeight);
+
+    board[appleY][appleX].apple = 1;
+}
+
+
+
+
+
+
+

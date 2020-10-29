@@ -1,26 +1,26 @@
-* {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    width: 100vh;
+html {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
 }
 
-.playbox {
-    position: absolute;
-    width: 1000px;
-    height: 1000px;
+#board div {
     background-color: black;
-    right: 35%;
+    border: 1px solid grey;
+    box-sizing: border-box;
+    float: left;
+    width: 1.5em;
+    height: 1.5em;
 }
 
-button {
-    height: 10em;
-    width: 10em;
+#board {
+    width: calc(26 * 1.5em);
+    margin: auto;
 }
 
-.player {
-    position: relative;
-    height: 50px;
-    width: 50px;
-    background-color: blanchedalmond;
+#board .snake {
+    background-color: green;
+}
+
+#board .apple {
+    background-color: red;
 }
