@@ -1,7 +1,7 @@
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    document.body.innerHTML = "Welcome to my version of snake, press start when you are ready ";
+    document.body.innerHTML = "Welcome to my version of snake, press start when you are ready" + `<br>`;
     let startButtonNode = document.createElement("button")
     let textNode = document.createTextNode("Start game");
 
@@ -73,9 +73,11 @@ function initGame() {
         }
         board.push(row);
     }
-    timerStart()
+    
+    
     startGame()
     gameLoop()
+    timerStart()
 }
 
 function startGame() {
@@ -104,6 +106,10 @@ function startGame() {
 
     // places food
     placeFood()
+
+    //restarts timer
+    myTimer = 0;
+    
 }
 
 function gameLoop() {
