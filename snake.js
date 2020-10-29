@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 })
 //timer and score vars
-let score = 0;
+
 let myTimer = 0;
+let highscore = 0;
 
 //board size vars
 const board = [];
@@ -49,11 +50,14 @@ function initGame() {
     score.id = "score";
     document.body.appendChild(score)
 
+    let highscore = document.createElement("p");
+    highscore.id = "highscore";
+    document.body.appendChild(highscore)
     // timer
-    
+
     let timerNode = document.createElement("p")
     timerNode.id = ("timer")
-    timerNode.innerHTML = "You have survied for " + myTimer+ " seconds."
+    timerNode.innerHTML = "You have survied for " + myTimer + " seconds."
     document.body.appendChild(timerNode);
 
     const boardNode = document.getElementById("board")
@@ -75,6 +79,9 @@ function initGame() {
 }
 
 function startGame() {
+    let highscoreNode = document.getElementById("highscore")
+    highscoreNode.innerHTML = "Highscore: " + (highscore);
+    document.body.appendChild(highscoreNode)
 
     // Default position for the snake in the middle of the board.
     snakeX = Math.floor(boardWidth / 2);
@@ -104,7 +111,7 @@ function gameLoop() {
     let timer = document.getElementById("timer")
 
     score.innerHTML = "Score: " + (snakeLength - 5);
-    timer.innerHTML = "You have survied for " + myTimer+ " seconds."
+    timer.innerHTML = "You have survied for " + myTimer + " seconds."
 
     //  Direction changer
     switch (snakeDirection) {
@@ -123,10 +130,16 @@ function gameLoop() {
     }
 
     if (snakeX < 0 || snakeY < 0 || snakeX >= boardWidth || snakeY >= boardHeight) {
+        if ((snakeLength - 5)> highscore) {
+            highscore = (snakeLength - 5);
+        }
         startGame()
     }
 
     if (board[snakeY][snakeX].snake > 0) {
+        if ((snakeLength - 5)  > highscore) {
+            highscore = (snakeLength - 5);
+        }
         startGame();
     }
 
