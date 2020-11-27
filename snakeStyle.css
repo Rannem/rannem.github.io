@@ -1,14 +1,13 @@
-html {
-    text-align: center;
-    font-family: 'Roboto', sans-serif;
-}
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
     
 }
 body {
-
+    background: white;
 }
 #board div {
     background-color: black;
