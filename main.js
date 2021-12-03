@@ -79,14 +79,6 @@ const earth = new THREE.Mesh(
 
 scene.add(earth);
 
-const saturnTexture = new THREE.TextureLoader().load("./pictures/sun.jpg");
-const spaceRing = new THREE.Mesh(
-  new THREE.TorusGeometry(10, 3, 16, 100),
-  new THREE.MeshBasicMaterial({ map: saturnTexture })
-);
-
-scene.add(spaceRing);
-
 earth.position.z = 30;
 earth.position.setX(-10);
 
@@ -117,11 +109,9 @@ moveCamera();
 function animate() {
   requestAnimationFrame(animate);
 
-  spaceRing.rotation.x += 0.01;
 
   earth.rotation.x += 0.005;
 
-  // controls.update();
 
   renderer.render(scene, camera);
 }
